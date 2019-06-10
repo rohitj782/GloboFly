@@ -8,6 +8,11 @@ import com.smartherd.globofly.R
 import com.smartherd.globofly.helpers.SampleData
 import com.smartherd.globofly.models.Destination
 import kotlinx.android.synthetic.main.activity_destiny_detail.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import rohitrj.com.retrofit.services.DestinationServices
+import rohitrj.com.retrofit.services.ServiceBuilder
 
 
 class DestinationDetailActivity : AppCompatActivity() {
@@ -36,9 +41,18 @@ class DestinationDetailActivity : AppCompatActivity() {
 
 	private fun loadDetails(id: Int) {
 
-		// To be replaced by retrofit code
-		val destination = SampleData.getDestinationById(id)
 
+		val services=ServiceBuilder.buildService(DestinationServices::class.java)
+		val requestCall=services.getDestination(id)
+
+		requestCall.enqueue(object: Callback<Destination>{
+			override fun onFailure(call: Call<Destination>, t: Throwable) {
+
+			}
+
+			override fun onResponse(call: Call<Destination>, response: Response<Destination>) {
+
+				val destination=response.body()
 		destination?.let {
 			et_city.setText(destination.city)
 			et_description.setText(destination.description)
@@ -46,6 +60,11 @@ class DestinationDetailActivity : AppCompatActivity() {
 
 			collapsing_toolbar.title = destination.city
 		}
+
+			}
+
+		})
+
 	}
 
 	private fun initUpdateButton(id: Int) {
@@ -71,6 +90,7 @@ class DestinationDetailActivity : AppCompatActivity() {
 	private fun initDeleteButton(id: Int) {
 
 		btn_delete.setOnClickListener {
+
 
             // To be replaced by retrofit code
             SampleData.deleteDestination(id)
