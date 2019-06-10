@@ -2,10 +2,16 @@ package com.smartherd.globofly.activities
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.widget.Toast
 import com.smartherd.globofly.R
 import com.smartherd.globofly.helpers.SampleData
 import com.smartherd.globofly.models.Destination
 import kotlinx.android.synthetic.main.activity_destiny_create.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import rohitrj.com.retrofit.services.DestinationServices
+import rohitrj.com.retrofit.services.ServiceBuilder
 
 class DestinationCreateActivity : AppCompatActivity() {
 
@@ -25,9 +31,23 @@ class DestinationCreateActivity : AppCompatActivity() {
 			newDestination.description = et_description.text.toString()
 			newDestination.country = et_country.text.toString()
 
-			// To be replaced by retrofit code
-			SampleData.addDestination(newDestination)
-            finish() // Move back to DestinationListActivity
+
+			val destinationServices = ServiceBuilder.buildService(DestinationServices::class.java)
+			val requestCall = destinationServices.addDestination(newDestination)
+
+			requestCall.enqueue(object : Callback<Destination>{
+				override fun onResponse(call: Call<Destination>, response: Response<Destination>) {
+
+					Toast.makeText(this@DestinationCreateActivity,"Success",Toast.LENGTH_LONG).show()
+					finish()
+				}
+
+				override fun onFailure(call: Call<Destination>, t: Throwable) {
+					TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+				}
+
+			})
+
 		}
 	}
 }
