@@ -2,10 +2,7 @@ package rohitrj.com.retrofit.services
 
 import com.smartherd.globofly.models.Destination
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface DestinationServices {
 
@@ -20,5 +17,12 @@ interface DestinationServices {
     //posting to the server
     @POST("destination")
     fun addDestination (@Body destination: Destination):Call<Destination>
+
+    //Updating data to the server
+    @PUT("destination/{id}")
+    fun updateDestination(@Path("id")id: Int, @Body destination: Destination):Call<Destination>
+
+    @DELETE("destination/{id}")
+    fun deleteDestination(@Path("id")id: Int):Call<Unit>
 
 }

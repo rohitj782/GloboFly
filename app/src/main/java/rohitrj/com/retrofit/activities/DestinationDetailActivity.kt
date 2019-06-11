@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import android.widget.Toast
 import com.smartherd.globofly.R
 import com.smartherd.globofly.helpers.SampleData
 import com.smartherd.globofly.models.Destination
@@ -75,15 +76,31 @@ class DestinationDetailActivity : AppCompatActivity() {
 			val description = et_description.text.toString()
 			val country = et_country.text.toString()
 
-            // To be replaced by retrofit code
+
             val destination = Destination()
             destination.id = id
             destination.city = city
             destination.description = description
             destination.country = country
 
-            SampleData.updateDestination(destination);
-            finish() // Move back to DestinationListActivity
+
+			val services = ServiceBuilder.buildService(DestinationServices::class.java)
+			val call = services.updateDestination(id,destination)
+
+			call.enqueue(object: Callback<Destination>{
+				override fun onFailure(call: Call<Destination>, t: Throwable) {
+					Toast.makeText(this@DestinationDetailActivity,"Failed",Toast.LENGTH_LONG).show()
+				}
+
+				override fun onResponse(call: Call<Destination>, response: Response<Destination>) {
+
+					Toast.makeText(this@DestinationDetailActivity,"Successfully Updated!",Toast.LENGTH_LONG).show()
+					finish()
+				}
+
+			})
+ // Move back to DestinationListActivity
+
 		}
 	}
 
@@ -92,9 +109,22 @@ class DestinationDetailActivity : AppCompatActivity() {
 		btn_delete.setOnClickListener {
 
 
-            // To be replaced by retrofit code
-            SampleData.deleteDestination(id)
-            finish() // Move back to DestinationListActivity
+			var services = ServiceBuilder.buildService(DestinationServices::class.java)
+
+			var call = services.deleteDestination(id)
+
+			call.enqueue(object : Callback<Unit>{
+				override fun onFailure(call: Call<Unit>, t: Throwable) {
+					Toast.makeText(this@DestinationDetailActivity,"Failed",Toast.LENGTH_LONG).show()
+				}
+
+				override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+					Toast.makeText(this@DestinationDetailActivity,"Successfully Updated!",Toast.LENGTH_LONG).show()
+					finish()
+				}
+
+			})
+
 		}
 	}
 
